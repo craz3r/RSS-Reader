@@ -1,14 +1,8 @@
-# javascript-package
+![Maintainability](https://api.codeclimate.com/v1/badges/a99a88d28ad37a79dbf6/maintainability)](https://codeclimate.com/github/codeclimate/codeclimate/maintainability)
 
-[![Code Climate](https://codeclimate.com/github/hexlet-boilerplates/webpack-package/badges/gpa.svg)](https://codeclimate.com/github/hexlet-boilerplates/webpack-package)
-[![Issue Count](https://codeclimate.com/github/hexlet-boilerplates/webpack-package/badges/issue_count.svg)](https://codeclimate.com/github/hexlet-boilerplates/webpack-package)
-[![Build Status](https://travis-ci.org/hexlet-boilerplates/webpack-package.svg?branch=master)](https://travis-ci.org/hexlet-boilerplates/webpack-package)
+[![Build Status](https://travis-ci.org/craz3r/project-lvl3-s270.svg?branch=master)](https://travis-ci.org/craz3r/project-lvl3-s270)
 
-##
-[![Hexlet Ltd. logo](https://raw.githubusercontent.com/Hexlet/hexletguides.github.io/master/images/hexlet_logo128.png)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=webpack-package)
-
-This repository is created and maintained by the team and the community of Hexlet, an educational project. [Read more about Hexlet (in Russian)](https://ru.hexlet.io/pages/about?utm_source=github&utm_medium=link&utm_campaign=webpack-package).
-##
+## http://tightfisted-burst.surge.sh/
 
 ## Setup
 
