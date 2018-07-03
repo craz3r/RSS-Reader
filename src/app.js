@@ -1,38 +1,65 @@
 import validator from 'validator';
 import axios from 'axios';
-
-const renderRssItem = (channel) => {
-  const name = document.createElement('h2');
-  name.innerHTML = channel.querySelector('title').textContent;
-  const li = document.createElement('li');
-  li.appendChild(name);
-  console.log(li);
-  return li;
-};
-
-const renderRss = (items) => {
-  const ul = document.createElement('ul');
-  items.forEach(item => ul.appendChild(renderRssItem(item)));
-  console.log(ul);
-  return ul;
-};
+import normalizeURL from 'normalize-url';
+import Channel from './channel';
 
 export default () => {
-  const field = document.querySelector('#inputRSS');
-  const form = document.querySelector('#getRSS');
-  const root = document.querySelector('#point');
-
   let state = {
     currentURL: '',
     rssStreams: [],
-    requestStatus: null,
+    loading: false,
     rssLinks: [],
     isValid: false,
   };
 
+  const root = document.querySelector('#point');
+  const field = root.querySelector('#inputRSS');
+  const form = root.querySelector('#getRSS');
+
+  const renderRss = () => {
+    const channels = state.rssStreams;
+    const ul = document.createElement('ul');
+    ul.classList.add('list-group');
+    channels.forEach(ch => ul.appendChild(Channel(ch)));
+    return ul;
+  };
+
+  const getRssFeed = () => {
+    state = { ...state, rssLinks: [...state.rssLinks, state.currentURL] };
+    state = { ...state, loading: true };
+
+    const send = root.querySelector('#send');
+    send.setAttribute('disabled', 'true');
+
+    const loader = document.createElement('p');
+    loader.classList.add('text-center');
+    loader.innerHTML = 'Loading...';
+    root.appendChild(loader);
+
+    axios.get(state.currentURL)
+      .then((res) => {
+        state = { ...state, loading: false };
+        send.removeAttribute('disabled');
+        field.value = '';
+
+        const parser = new DOMParser();
+        const rss = parser.parseFromString(res.data, 'application/xml');
+        state = { ...state, rssStreams: [...state.rssStreams, rss] };
+
+        root.removeChild(loader);
+        root.appendChild(renderRss());
+      })
+      .catch((err) => {
+        console.log(`error - ${err}`);
+        state = { ...state, loading: false };
+        send.removeAttribute('disabled');
+        root.removeChild(loader);
+      });
+  };
+
   field.addEventListener('input', (e) => {
-    state = { ...state, currentURL: e.target.value };
-    if (!validator.isURL(e.target.value) || state.rssLinks.includes(e.target.value)) {
+    state = { ...state, currentURL: normalizeURL(e.target.value) };
+    if (!validator.isURL(e.target.value) || state.rssLinks.includes(normalizeURL(e.target.value))) {
       field.classList.add('is-invalid');
       state = { ...state, isValid: false };
     } else {
@@ -44,20 +71,6 @@ export default () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    if (!state.isValid) return false;
-
-    axios.get(state.currentURL)
-      .then((res) => {
-        const parser = new DOMParser();
-        const rss = parser.parseFromString(res.data, 'application/xml');
-        state = { ...state, rssStreams: [...state.rssStreams, rss] };
-        state = { ...state, rssLinks: [...state.rssLinks, state.currentURL] };
-        field.value = '';
-        if (state.rssStreams.length) {
-          root.appendChild(renderRss(state.rssStreams));
-        }
-        console.log(state);
-      })
-      .catch(err => console.log(`error - ${err}`));
+    return state.isValid ? getRssFeed() : false;
   });
 };
