@@ -23,9 +23,11 @@
   },
   "homepage": "https://github.com/hexlet-boilerplates/webpack-package#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "bootstrap": "^4.1.1",
     "jquery": "^3.3.1",
-    "popper.js": "^1.14.3"
+    "popper.js": "^1.14.3",
+    "validator": "^10.4.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
