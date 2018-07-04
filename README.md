@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/craz3r/project-lvl3-s270.svg?branch=master)](https://travis-ci.org/craz3r/project-lvl3-s270)
 
-## http://untidy-wealth.surge.sh
+## http://coordinated-shade.surge.sh
 
 ## Setup
 
