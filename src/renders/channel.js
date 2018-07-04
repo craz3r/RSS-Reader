@@ -1,4 +1,4 @@
-import Article from './article';
+import renderArticle from './article';
 
 export default (channel) => {
   const textTitle = channel.querySelector('title').textContent;
@@ -10,7 +10,7 @@ export default (channel) => {
     <h2>${textTitle}</h2>
     <p>${descriptionText}</h2>
     <ul class='list-group'>
-      ${Array.from(articles).map(a => Article(a)).join('')}
+      ${Array.from(articles).map(a => renderArticle(a)).join('')}
     </ul>
   `;
   return li;

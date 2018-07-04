@@ -1,10 +1,10 @@
 import validator from 'validator';
 import axios from 'axios';
 import normalizeURL from 'normalize-url';
-import Channel from './channel';
+import renderChannel from './renders/channel';
 
 export default () => {
-  let state = {
+  const state = {
     currentURL: '',
     rssStreams: [],
     loading: false,
@@ -16,17 +16,22 @@ export default () => {
   const field = root.querySelector('#inputRSS');
   const form = root.querySelector('#getRSS');
 
+  const parseRss = () => {
+    const parser = new DOMParser();
+    return state.rssStreams.map(rss => parser.parseFromString(rss, 'application/xml'));
+  };
+
   const renderRss = () => {
-    const channels = state.rssStreams;
+    const channels = parseRss();
     const ul = document.createElement('ul');
     ul.classList.add('list-group');
-    channels.forEach(ch => ul.appendChild(Channel(ch)));
+    channels.forEach(ch => ul.appendChild(renderChannel(ch)));
     return ul;
   };
 
   const getRssFeed = () => {
-    state = { ...state, rssLinks: [...state.rssLinks, state.currentURL] };
-    state = { ...state, loading: true };
+    state.rssLinks = [...state.rssLinks, state.currentURL];
+    state.loading = true;
 
     const send = root.querySelector('#send');
     send.setAttribute('disabled', 'true');
@@ -38,33 +43,31 @@ export default () => {
 
     axios.get(state.currentURL)
       .then((res) => {
-        state = { ...state, loading: false };
+        state.loading = false;
         send.removeAttribute('disabled');
         field.value = '';
 
-        const parser = new DOMParser();
-        const rss = parser.parseFromString(res.data, 'application/xml');
-        state = { ...state, rssStreams: [...state.rssStreams, rss] };
+        state.rssStreams = [...state.rssStreams, res.data];
 
         root.removeChild(loader);
         root.appendChild(renderRss());
       })
       .catch((err) => {
         console.log(`error - ${err}`);
-        state = { ...state, loading: false };
+        state.loading = false;
         send.removeAttribute('disabled');
         root.removeChild(loader);
       });
   };
 
   field.addEventListener('input', (e) => {
-    state = { ...state, currentURL: normalizeURL(e.target.value) };
-    if (!validator.isURL(e.target.value) || state.rssLinks.includes(normalizeURL(e.target.value))) {
+    state.currentURL = normalizeURL(e.target.value);
+    if (!validator.isURL(e.target.value) || state.rssLinks.includes(state.currentURL)) {
       field.classList.add('is-invalid');
-      state = { ...state, isValid: false };
+      state.isValid = false;
     } else {
       field.classList.remove('is-invalid');
-      state = { ...state, isValid: true };
+      state.isValid = true;
     }
   });
 
