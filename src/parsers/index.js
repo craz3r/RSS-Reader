@@ -10,6 +10,7 @@ export default (stream) => {
     ({
       link: a.querySelector('link').textContent,
       title: a.querySelector('title').textContent,
+      description: a.querySelector('description').textContent,
     }));
 
   return {

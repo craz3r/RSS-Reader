@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from 'axios';
 import normalizeURL from 'normalize-url';
 import changeView from './renders';
@@ -51,6 +52,14 @@ export default () => {
     if (state.isValid) {
       getRssFeed();
     }
+  });
+
+  $('#modal').on('show.bs.modal', (e) => {
+    const btn = $(e.relatedTarget);
+    const title = btn.data('title');
+    const description = btn.data('description');
+    $('#modal').find('.modal-title').text(title);
+    $('#modal').find('.modal-body').text(description);
   });
 
   changeView(root, state);

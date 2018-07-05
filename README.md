@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/craz3r/project-lvl3-s270.svg?branch=master)](https://travis-ci.org/craz3r/project-lvl3-s270)
 
-## http://defiant-sisters.surge.sh
+## http://best-kick.surge.sh
 
 ## Setup
 
