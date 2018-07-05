@@ -1,4 +1,20 @@
-export default (streams) => {
+export default (stream) => {
   const parser = new DOMParser();
-  return streams.map(rss => parser.parseFromString(rss, 'application/xml'));
+  const doc = parser.parseFromString(stream, 'application/xml');
+
+  if (doc.querySelector('parsererror')) {
+    return new Error('This is not xml document');
+  }
+
+  const articles = Array.from(doc.querySelectorAll('item')).map(a =>
+    ({
+      link: a.querySelector('link').textContent,
+      title: a.querySelector('title').textContent,
+    }));
+
+  return {
+    title: doc.querySelector('title').textContent,
+    description: doc.querySelector('description').textContent,
+    articles,
+  };
 };

@@ -2,6 +2,7 @@ import axios from 'axios';
 import normalizeURL from 'normalize-url';
 import changeView from './renders';
 import checkValid from './validators';
+import parseRss from './parsers';
 
 export default () => {
   const state = {
@@ -9,7 +10,7 @@ export default () => {
     rssStreams: [],
     loading: false,
     rssLinks: [],
-    isValid: false,
+    isValid: undefined,
   };
 
   const root = document.querySelector('#point');
@@ -17,17 +18,22 @@ export default () => {
   const form = root.querySelector('#getRSS');
 
   const getRssFeed = () => {
-    state.rssLinks = [...state.rssLinks, state.currentURL];
     state.loading = true;
 
     axios.get(state.currentURL)
       .then((res) => {
         state.loading = false;
-        field.value = '';
-        state.rssStreams = [...state.rssStreams, res.data];
+        const feed = parseRss(res.data);
+        if (feed instanceof Error) {
+          throw feed;
+        } else {
+          state.rssStreams = [feed, ...state.rssStreams];
+          state.rssLinks = [state.currentURL, ...state.rssLinks];
+          field.value = '';
+        }
       })
       .catch((err) => {
-        console.log(`error - ${err}`);
+        console.log(err);
         state.loading = false;
       });
   };

@@ -1,5 +1,4 @@
 import { watch } from 'melanke-watchjs';
-import parseRss from '../parsers';
 import renderChannel from './channel';
 import renderLoader from './loader';
 import renderFormState from './form';
@@ -19,22 +18,14 @@ export default (root, state) => {
 
   watch(state, 'rssStreams', () => {
     const { rssStreams } = state;
-    const channels = parseRss(rssStreams);
 
     const mountEl = document.querySelector('#output');
     const ul = document.createElement('ul');
     ul.classList.add('list-group');
 
-    channels.forEach(ch => ul.appendChild(renderChannel(ch)));
+    rssStreams.forEach(ch => ul.appendChild(renderChannel(ch)));
 
-    if (!mountEl) {
-      const container = document.createElement('div');
-      container.setAttribute('id', 'output');
-      container.appendChild(ul);
-      root.appendChild(container);
-    } else {
-      mountEl.innerHTML = '';
-      mountEl.appendChild(ul);
-    }
+    mountEl.innerHTML = '';
+    mountEl.appendChild(ul);
   });
 };
