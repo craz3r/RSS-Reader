@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import _ from 'lodash';
 import axios from 'axios';
 import normalizeURL from 'normalize-url';
 import changeView from './renders';
@@ -20,6 +21,25 @@ export default () => {
   const field = root.querySelector('#inputRSS');
   const form = root.querySelector('#getRSS');
 
+  const updateRssFeed = () => {
+    const links = state.rssLinks.map(l => axios.get(l));
+    const reqs = Promise.all(links);
+    reqs.then((res) => {
+      const updatedFeed = res.map(r => parseRss(r.data));
+      updatedFeed.forEach(({ articles }, idx) => {
+        articles.forEach((a) => {
+          if (!_.find(state.rssStreams[idx].articles, a)) {
+            state.rssStreams[idx].articles.push(a);
+          }
+        });
+      });
+    })
+      .catch((err) => {
+        console.log(`Update rss error ${err}`);
+      });
+    setTimeout(() => { updateRssFeed(); }, 5000);
+  };
+
   const getRssFeed = () => {
     state.requestSend = true;
     state.requestSuccess = false;
@@ -39,6 +59,7 @@ export default () => {
         state.requestError = true;
         state.requestSuccess = false;
       });
+    setTimeout(() => { updateRssFeed(); }, 5000);
   };
 
   field.addEventListener('input', (e) => {
