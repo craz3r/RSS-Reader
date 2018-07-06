@@ -1,8 +1,4 @@
-export default (root, isValid) => {
+export default (root, { requestSuccess }) => {
   const field = root.querySelector('#inputRSS');
-  if (!isValid) {
-    field.classList.add('is-invalid');
-  } else {
-    field.classList.remove('is-invalid');
-  }
+  if (requestSuccess) field.value = '';
 };

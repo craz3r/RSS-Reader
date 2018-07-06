@@ -9,9 +9,11 @@ export default () => {
   const state = {
     currentURL: '',
     rssStreams: [],
-    loading: false,
     rssLinks: [],
     isValid: undefined,
+    requestSuccess: null,
+    requestSend: null,
+    requestError: null,
   };
 
   const root = document.querySelector('#point');
@@ -19,23 +21,23 @@ export default () => {
   const form = root.querySelector('#getRSS');
 
   const getRssFeed = () => {
-    state.loading = true;
+    state.requestSend = true;
+    state.requestSuccess = false;
+    state.requestError = false;
 
     axios.get(state.currentURL)
       .then((res) => {
-        state.loading = false;
         const feed = parseRss(res.data);
-        if (feed instanceof Error) {
-          throw feed;
-        } else {
-          state.rssStreams = [feed, ...state.rssStreams];
-          state.rssLinks = [state.currentURL, ...state.rssLinks];
-          field.value = '';
-        }
+        state.rssStreams = [feed, ...state.rssStreams];
+        state.rssLinks = [state.currentURL, ...state.rssLinks];
+        state.requestSend = false;
+        state.requestSuccess = true;
       })
       .catch((err) => {
         console.log(err);
-        state.loading = false;
+        state.requestSend = false;
+        state.requestError = true;
+        state.requestSuccess = false;
       });
   };
 

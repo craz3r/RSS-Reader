@@ -1,6 +1,6 @@
-export default (root, loading) => {
+export default (root, { requestSend }) => {
   const send = root.querySelector('#send');
-  if (loading) {
+  if (requestSend) {
     send.setAttribute('disabled', 'true');
   } else {
     send.removeAttribute('disabled');

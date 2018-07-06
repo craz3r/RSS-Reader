@@ -3,17 +3,20 @@ import renderChannel from './channel';
 import renderLoader from './loader';
 import renderFormState from './form';
 import renderFieldState from './field';
+import renderErrors from './errors';
 
 export default (root, state) => {
-  watch(state, 'loading', () => {
-    const { loading } = state;
-    renderFormState(root, loading);
-    renderLoader(root, loading);
+  watch(state, 'requestSend', () => {
+    renderFormState(root, state);
+    renderLoader(root, state);
   });
 
-  watch(state, 'isValid', () => {
-    const { isValid } = state;
-    renderFieldState(root, isValid);
+  watch(state, 'requestSuccess', () => {
+    renderFieldState(root, state);
+  });
+
+  watch(state, ['isValid', 'requestError'], () => {
+    renderErrors(root, state);
   });
 
   watch(state, 'rssStreams', () => {

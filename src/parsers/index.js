@@ -3,7 +3,7 @@ export default (stream) => {
   const doc = parser.parseFromString(stream, 'application/xml');
 
   if (doc.querySelector('parsererror')) {
-    return new Error('This is not xml document');
+    throw new Error('This is not xml document');
   }
 
   const articles = Array.from(doc.querySelectorAll('item')).map(a =>
