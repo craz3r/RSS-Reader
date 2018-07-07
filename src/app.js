@@ -33,11 +33,12 @@ export default () => {
           }
         });
       });
+      setTimeout(() => { updateRssFeed(); }, 5000);
     })
       .catch((err) => {
         console.log(`Update rss error ${err}`);
+        setTimeout(() => { updateRssFeed(); }, 5000);
       });
-    setTimeout(() => { updateRssFeed(); }, 5000);
   };
 
   const getRssFeed = () => {
@@ -52,6 +53,7 @@ export default () => {
         state.rssLinks = [state.currentURL, ...state.rssLinks];
         state.requestSend = false;
         state.requestSuccess = true;
+        setTimeout(() => { updateRssFeed(); }, 5000);
       })
       .catch((err) => {
         console.log(err);
@@ -59,7 +61,6 @@ export default () => {
         state.requestError = true;
         state.requestSuccess = false;
       });
-    setTimeout(() => { updateRssFeed(); }, 5000);
   };
 
   field.addEventListener('input', (e) => {
